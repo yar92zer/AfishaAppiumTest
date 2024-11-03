@@ -1,7 +1,7 @@
 package org.example.afishaappiumtest;
 
 import io.appium.java_client.android.AndroidDriver;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.remote.DesiredCapabilities;
