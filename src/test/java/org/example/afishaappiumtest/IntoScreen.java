@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.time.Duration;
 
 public class IntoScreen {
-    private final allureLogger LOG;
+    private final AllureLogger LOG;
     private final AndroidDriver driver;
     private final WebDriverWait wait;
     private static final Duration TIMEOUT = Duration.ofSeconds(15);
@@ -58,7 +58,7 @@ public class IntoScreen {
 
     public IntoScreen(AndroidDriver driver) {
         this.driver = driver;
-        this.LOG = new allureLogger(LoggerFactory.getLogger(IntoScreen.class), driver);
+        this.LOG = new AllureLogger(LoggerFactory.getLogger(IntoScreen.class), driver);
         this.wait = new WebDriverWait(driver, TIMEOUT);
         PageFactory.initElements(new AppiumFieldDecorator(driver), this);
     }
@@ -115,6 +115,12 @@ public class IntoScreen {
 
     public boolean citySearchWork () {
         LOG.into("Поиск города: ");
+        waitForElementVisible(skipButton);
+        skipButton.click();
+        waitForElementVisible(yourCity);
+        waitForElementClickable(noCityButton);
+        noCityButton.click();
+        waitForElementVisible(citySelectionButton);
         waitForElementClickable(citySearch);
         citySearch.click();
         return true;
@@ -122,6 +128,12 @@ public class IntoScreen {
 
     public boolean selectMoscow() {
         LOG.into("Выбор города Москва");
+        waitForElementVisible(skipButton);
+        skipButton.click();
+        waitForElementVisible(yourCity);
+        waitForElementClickable(noCityButton);
+        noCityButton.click();
+        waitForElementVisible(citySelectionButton);
         waitForElementClickable(moscowButton);
         moscowButton.click();
         return true;
@@ -129,6 +141,12 @@ public class IntoScreen {
 
     public boolean selectSaintPetersburg() {
         LOG.into("Выбор города Санкт-Петербург");
+        waitForElementVisible(skipButton);
+        skipButton.click();
+        waitForElementVisible(yourCity);
+        waitForElementClickable(noCityButton);
+        noCityButton.click();
+        waitForElementVisible(citySelectionButton);
         waitForElementClickable(stPetersburgButton);
         stPetersburgButton.click();
         return true;
@@ -136,6 +154,12 @@ public class IntoScreen {
 
     public boolean selectAbakan() {
         LOG.into("Выбор города Абакан");
+        waitForElementVisible(skipButton);
+        skipButton.click();
+        waitForElementVisible(yourCity);
+        waitForElementClickable(noCityButton);
+        noCityButton.click();
+        waitForElementVisible(citySelectionButton);
         waitForElementClickable(abakanButton);
         abakanButton.click();
         return true;
@@ -143,6 +167,12 @@ public class IntoScreen {
 
     public boolean selectAzov() {
         LOG.into("Выбор города Азов");
+        waitForElementVisible(skipButton);
+        skipButton.click();
+        waitForElementVisible(yourCity);
+        waitForElementClickable(noCityButton);
+        noCityButton.click();
+        waitForElementVisible(citySelectionButton);
         waitForElementClickable(azovButton);
         azovButton.click();
         return true;
@@ -150,6 +180,12 @@ public class IntoScreen {
 
     public boolean selectAnapa() {
         LOG.into("Выбор города Анапа");
+        waitForElementVisible(skipButton);
+        skipButton.click();
+        waitForElementVisible(yourCity);
+        waitForElementClickable(noCityButton);
+        noCityButton.click();
+        waitForElementVisible(citySelectionButton);
         waitForElementClickable(anapaButton);
         anapaButton.click();
         return true;

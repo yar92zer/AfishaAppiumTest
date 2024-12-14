@@ -6,7 +6,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class capability {
+public class Capability {
     private static final String APP_PATH = "C:\\Users\\Zero\\Desktop\\Workers\\Manual\\LD\\Афиша_ кино, театр, концерты_7.0.5_APKPure.apk";
     private static final String DEVICE_NAME = "emulator-5554";
     private static final String APPIUM_SERVER_URL = "http://127.0.0.1:4723";

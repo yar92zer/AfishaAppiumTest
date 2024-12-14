@@ -4,11 +4,11 @@ import io.appium.java_client.android.AndroidDriver;
 import io.qameta.allure.Step;
 import org.slf4j.Logger;
 
-public class allureLogger {
+public class AllureLogger {
     private final Logger logger;
     private final AndroidDriver driver;
 
-    public allureLogger(Logger logger, AndroidDriver driver) {
+    public AllureLogger(Logger logger, AndroidDriver driver) {
         this.logger = logger;
         this.driver = driver;
     }
@@ -21,6 +21,6 @@ public class allureLogger {
     @Step("{logText}")
     public void infoWithScreenshot(String logText) {
         logger.info(logText);
-        allureAttachmentsManager.screenshot(driver);
+        AllureAttachmentsManager.screenshot(driver);
     }
 }

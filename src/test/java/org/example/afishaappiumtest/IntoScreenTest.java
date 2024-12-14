@@ -13,7 +13,7 @@ public class IntoScreenTest {
 
     @BeforeEach
     public void setUp() throws MalformedURLException {
-        driver = capability.initializeDriver();
+        driver = Capability.initializeDriver();
         intoScreen = new IntoScreen(driver);
     }
 
@@ -56,7 +56,6 @@ public class IntoScreenTest {
     @Order(5)
     @DisplayName("Переход в раздел Выбор города Поиск не активен")
     public void selectCityPageTransition() {
-        assertTrue(intoScreen.selectDifferentCity(), "Раздел Выбор города не открылсья");
         assertTrue(intoScreen.citySearchWork(),"Поиск не активен");
     }
 
@@ -64,7 +63,6 @@ public class IntoScreenTest {
     @Order(6)
     @DisplayName("Проверка выбора города Санкт-Петербург")
     public void verifyCitySelection() {
-        assertTrue(intoScreen.selectDifferentCity(), "Не удалось перейти в раздел 'Выбор города'");
         assertTrue(intoScreen.selectSaintPetersburg(), "Не удалось выбрать Санкт-Петербург");
     }
 
@@ -72,7 +70,6 @@ public class IntoScreenTest {
     @Order(7)
     @DisplayName("Проверка выбора города Москва")
     public void moscoCitySelection() {
-        assertTrue(intoScreen.selectDifferentCity(), "Не удалось перейти в раздел 'Выбор города'");
         assertTrue(intoScreen.selectMoscow(), "Не удалось выбрать Москва");
     }
 
@@ -80,7 +77,6 @@ public class IntoScreenTest {
     @Order(8)
     @DisplayName("Проверка выбора города Абакан")
     public void abakanCitySelection() {
-        assertTrue(intoScreen.selectDifferentCity(), "Не удалось перейти в раздел 'Выбор города'");
         assertTrue(intoScreen.selectAbakan(), "Не удалось выбрать Абакан");
     }
 
@@ -88,7 +84,6 @@ public class IntoScreenTest {
     @Order(9)
     @DisplayName("Проверка выбора города Азов")
     public void azovCitySelection() {
-        assertTrue(intoScreen.selectDifferentCity(), "Не удалось перейти в раздел 'Выбор города'");
         assertTrue(intoScreen.selectAzov(), "Не удалось выбрать Азов");
     }
 
@@ -96,7 +91,6 @@ public class IntoScreenTest {
     @Order(10)
     @DisplayName("Проверка выбора города Aнапа ")
     public void anapaCitySelection() {
-        assertTrue(intoScreen.selectDifferentCity(), "Не удалось перейти в раздел 'Выбор города'");
         assertTrue(intoScreen.selectAnapa(), "Не удалось выбрать Анапа");
     }
 }
