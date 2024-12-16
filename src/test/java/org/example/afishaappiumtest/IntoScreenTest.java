@@ -56,7 +56,7 @@ public class IntoScreenTest {
     @Order(5)
     @DisplayName("Переход в раздел Выбор города Поиск не активен")
     public void selectCityPageTransition() {
-        assertTrue(intoScreen.citySearchWork(),"Поиск не активен");
+        assertTrue(intoScreen.citySearchWork(), "Поиск не активен");
     }
 
     @Test

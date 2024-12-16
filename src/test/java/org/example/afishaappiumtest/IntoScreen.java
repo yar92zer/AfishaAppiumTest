@@ -3,72 +3,45 @@ package org.example.afishaappiumtest;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.pagefactory.AndroidFindBy;
 import io.appium.java_client.pagefactory.AppiumFieldDecorator;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.LoggerFactory;
 
-import java.time.Duration;
-
-public class IntoScreen {
+public class IntoScreen extends MyWait {
     private final AllureLogger LOG;
     private final AndroidDriver driver;
-    private final WebDriverWait wait;
-    private static final Duration TIMEOUT = Duration.ofSeconds(15);
+    private static final long TIMEOUT_SECONDS = 15;
 
     @AndroidFindBy(id = "fragOnboardingSkipBtn")
     private WebElement skipButton;
 
-    @AndroidFindBy(xpath = "//android.widget.Button[@resource-id=\"ru.afisha.android:id/fragOnboardinSubmitBtn\"]")
+    @AndroidFindBy(id = "ru.afisha.android:id/fragOnboardinSubmitBtn")
     private WebElement submitButton;
 
-    @AndroidFindBy(xpath = "//android.widget.TextView[@resource-id=\"android:id/message\"]")
+    @AndroidFindBy(id = "android:id/message")
     private WebElement yourCity;
 
-    @AndroidFindBy(xpath = "//android.widget.Button[@resource-id=\"android:id/button1\"]")
+    @AndroidFindBy(id = "android:id/button1")
     private WebElement yesCityButton;
 
-    @AndroidFindBy(xpath = "//android.widget.Button[@resource-id=\"android:id/button2\"]")
+    @AndroidFindBy(id = "android:id/button2")
     private WebElement noCityButton;
 
-    @AndroidFindBy(xpath = "//android.widget.FrameLayout[@content-desc=\"Афиша\"]")
+    @AndroidFindBy(id = "ru.afisha.android:id/main")
     private WebElement afishaButton;
 
     @AndroidFindBy(xpath = "//android.widget.TextView[@text=\"Выбор города\"]")
     private WebElement citySelectionButton;
 
-    @AndroidFindBy(xpath = "//android.widget.EditText[@resource-id=\"ru.afisha.android:id/viewSearchText\"]")
+    @AndroidFindBy(id = "ru.afisha.android:id/viewSearchText")
     private WebElement citySearch;
 
-    @AndroidFindBy(xpath = "//androidx.recyclerview.widget.RecyclerView[@resource-id=\"ru.afisha.android:id/fragCitySelectionCitiesRv\"]/android.widget.LinearLayout[1]")
-    private WebElement moscowButton;
-
-    @AndroidFindBy(xpath = "//android.widget.TextView[@resource-id=\"ru.afisha.android:id/itemCitySelectionName\" and @text=\"Санкт-Петербург\"]")
-    private WebElement stPetersburgButton;
-
-    @AndroidFindBy(xpath = "//androidx.recyclerview.widget.RecyclerView[@resource-id=\"ru.afisha.android:id/fragCitySelectionCitiesRv\"]/android.widget.LinearLayout[3]")
-    private WebElement abakanButton;
-
-    @AndroidFindBy(xpath = "//androidx.recyclerview.widget.RecyclerView[@resource-id=\"ru.afisha.android:id/fragCitySelectionCitiesRv\"]/android.widget.LinearLayout[4]")
-    private WebElement azovButton;
-
-    @AndroidFindBy(xpath = "//androidx.recyclerview.widget.RecyclerView[@resource-id=\"ru.afisha.android:id/fragCitySelectionCitiesRv\"]/android.widget.LinearLayout[6]")
-    private WebElement anapaButton;
-
     public IntoScreen(AndroidDriver driver) {
+        super(driver, TIMEOUT_SECONDS);
         this.driver = driver;
         this.LOG = new AllureLogger(LoggerFactory.getLogger(IntoScreen.class), driver);
-        this.wait = new WebDriverWait(driver, TIMEOUT);
         PageFactory.initElements(new AppiumFieldDecorator(driver), this);
-    }
-
-    private void waitForElementVisible(WebElement element) {
-        wait.until(ExpectedConditions.visibilityOf(element));
-    }
-
-    private void waitForElementClickable(WebElement element) {
-        wait.until(ExpectedConditions.elementToBeClickable(element));
     }
 
     public boolean checkSubmitButton() {
@@ -113,8 +86,8 @@ public class IntoScreen {
         return citySelectionButton.isDisplayed();
     }
 
-    public boolean citySearchWork () {
-        LOG.into("Поиск города: ");
+    public boolean citySearchWork() {
+        LOG.into("Поиск города");
         waitForElementVisible(skipButton);
         skipButton.click();
         waitForElementVisible(yourCity);
@@ -126,68 +99,50 @@ public class IntoScreen {
         return true;
     }
 
-    public boolean selectMoscow() {
-        LOG.into("Выбор города Москва");
+    public boolean selectCityByTextAndOrder(String cityText, int order) {
+        LOG.into("Выбор города содержащего текст: " + cityText + " с порядковым номером: " + order);
+
         waitForElementVisible(skipButton);
         skipButton.click();
         waitForElementVisible(yourCity);
         waitForElementClickable(noCityButton);
         noCityButton.click();
         waitForElementVisible(citySelectionButton);
-        waitForElementClickable(moscowButton);
-        moscowButton.click();
-        return true;
+
+        String cityXpath = String.format(
+                "//androidx.recyclerview.widget.RecyclerView[@resource-id='ru.afisha.android:id/fragCitySelectionCitiesRv']" +
+                        "/android.widget.LinearLayout[%d]//android.widget.TextView[contains(@text, '%s')]",
+                order, cityText
+        );
+
+        try {
+            WebElement cityElement = driver.findElement(By.xpath(cityXpath));
+            waitForElementClickable(cityElement);
+            cityElement.click();
+            return true;
+        } catch (Exception e) {
+            LOG.into("[ОШИБКА] Не удалось найти город с текстом " + cityText + " и порядковым номером " + order);
+            return false;
+        }
+    }
+
+    public boolean selectMoscow() {
+        return selectCityByTextAndOrder("Москва", 1);
     }
 
     public boolean selectSaintPetersburg() {
-        LOG.into("Выбор города Санкт-Петербург");
-        waitForElementVisible(skipButton);
-        skipButton.click();
-        waitForElementVisible(yourCity);
-        waitForElementClickable(noCityButton);
-        noCityButton.click();
-        waitForElementVisible(citySelectionButton);
-        waitForElementClickable(stPetersburgButton);
-        stPetersburgButton.click();
-        return true;
+        return selectCityByTextAndOrder("Санкт-Петербург", 2);
     }
 
     public boolean selectAbakan() {
-        LOG.into("Выбор города Абакан");
-        waitForElementVisible(skipButton);
-        skipButton.click();
-        waitForElementVisible(yourCity);
-        waitForElementClickable(noCityButton);
-        noCityButton.click();
-        waitForElementVisible(citySelectionButton);
-        waitForElementClickable(abakanButton);
-        abakanButton.click();
-        return true;
+        return selectCityByTextAndOrder("Абакан", 3);
     }
 
     public boolean selectAzov() {
-        LOG.into("Выбор города Азов");
-        waitForElementVisible(skipButton);
-        skipButton.click();
-        waitForElementVisible(yourCity);
-        waitForElementClickable(noCityButton);
-        noCityButton.click();
-        waitForElementVisible(citySelectionButton);
-        waitForElementClickable(azovButton);
-        azovButton.click();
-        return true;
+        return selectCityByTextAndOrder("Азов", 4);
     }
 
     public boolean selectAnapa() {
-        LOG.into("Выбор города Анапа");
-        waitForElementVisible(skipButton);
-        skipButton.click();
-        waitForElementVisible(yourCity);
-        waitForElementClickable(noCityButton);
-        noCityButton.click();
-        waitForElementVisible(citySelectionButton);
-        waitForElementClickable(anapaButton);
-        anapaButton.click();
-        return true;
+        return selectCityByTextAndOrder("Анапа", 6);
     }
 }
