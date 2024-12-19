@@ -37,12 +37,14 @@ public class IntoScreen extends MyWait {
     @AndroidFindBy(id = "ru.afisha.android:id/viewSearchText")
     private WebElement citySearch;
 
+
     public IntoScreen(AndroidDriver driver) {
         super(driver, TIMEOUT_SECONDS);
         this.driver = driver;
         this.LOG = new AllureLogger(LoggerFactory.getLogger(IntoScreen.class), driver);
         PageFactory.initElements(new AppiumFieldDecorator(driver), this);
     }
+
 
     public boolean checkSubmitButton() {
         LOG.into("Проверка доступности кнопки 'пропуска гео'");
@@ -66,55 +68,54 @@ public class IntoScreen extends MyWait {
 
     public boolean yesCityButtonTransition() {
         LOG.into("Подтверждение выбора города");
-        waitForElementVisible(skipButton);
-        skipButton.click();
-        waitForElementVisible(yourCity);
-        waitForElementClickable(yesCityButton);
-        yesCityButton.click();
-        waitForElementVisible(afishaButton);
-        return afishaButton.isDisplayed();
+        return navigateToAfisha(this::clickYesButton);
     }
 
     public boolean selectDifferentCity() {
         LOG.into("Выбор другого города");
-        waitForElementVisible(skipButton);
-        skipButton.click();
-        waitForElementVisible(yourCity);
-        waitForElementClickable(noCityButton);
-        noCityButton.click();
-        waitForElementVisible(citySelectionButton);
-        return citySelectionButton.isDisplayed();
+        return navigateToCitySelection(this::clickNoCityButton);
     }
 
     public boolean citySearchWork() {
         LOG.into("Поиск города");
-        waitForElementVisible(skipButton);
-        skipButton.click();
-        waitForElementVisible(yourCity);
-        waitForElementClickable(noCityButton);
-        noCityButton.click();
-        waitForElementVisible(citySelectionButton);
+        if (!navigateToCitySelection(this::clickNoCityButton)) {
+            return false;
+        }
         waitForElementClickable(citySearch);
         citySearch.click();
         return true;
     }
 
-    public boolean selectCityByTextAndOrder(String cityText, int order) {
-        LOG.into("Выбор города содержащего текст: " + cityText + " с порядковым номером: " + order);
-
+    public boolean clickSkipButton() {
         waitForElementVisible(skipButton);
         skipButton.click();
+        return true;
+    }
+
+    public boolean clickNoCityButton() {
         waitForElementVisible(yourCity);
         waitForElementClickable(noCityButton);
         noCityButton.click();
-        waitForElementVisible(citySelectionButton);
+        return true;
+    }
 
-        String cityXpath = String.format(
-                "//androidx.recyclerview.widget.RecyclerView[@resource-id='ru.afisha.android:id/fragCitySelectionCitiesRv']" +
-                        "/android.widget.LinearLayout[%d]//android.widget.TextView[contains(@text, '%s')]",
-                order, cityText
-        );
+    public boolean clickYesButton() {
+        waitForElementVisible(yourCity);
+        waitForElementClickable(yesCityButton);
+        yesCityButton.click();
+        return true;
+    }
 
+    public boolean selectCityByTextAndOrder(String cityText, int order) {
+        LOG.into("Выбор города содержащего текст: " + cityText + " с порядковым номером: " + order);
+        if (!navigateToCitySelection(this::clickNoCityButton)) {
+            return false;
+        }
+        return findAndClickCity(cityText, order);
+    }
+
+    private boolean findAndClickCity(String cityText, int order) {
+        String cityXpath = buildCityXpath(cityText);
         try {
             WebElement cityElement = driver.findElement(By.xpath(cityXpath));
             waitForElementClickable(cityElement);
@@ -124,6 +125,13 @@ public class IntoScreen extends MyWait {
             LOG.into("[ОШИБКА] Не удалось найти город с текстом " + cityText + " и порядковым номером " + order);
             return false;
         }
+    }
+
+    private String buildCityXpath(String cityText) {
+        return String.format(
+                "//android.widget.TextView[@resource-id=\"ru.afisha.android:id/itemCitySelectionName\" and @text=\"%s\"]",
+                cityText
+        );
     }
 
     public boolean selectMoscow() {
@@ -144,5 +152,19 @@ public class IntoScreen extends MyWait {
 
     public boolean selectAnapa() {
         return selectCityByTextAndOrder("Анапа", 6);
+    }
+
+    private boolean navigateToAfisha(Runnable action) {
+        clickSkipButton();
+        action.run();
+        waitForElementVisible(afishaButton);
+        return afishaButton.isDisplayed();
+    }
+
+    private boolean navigateToCitySelection(Runnable action) {
+        clickSkipButton();
+        action.run();
+        waitForElementVisible(citySelectionButton);
+        return citySelectionButton.isDisplayed();
     }
 }

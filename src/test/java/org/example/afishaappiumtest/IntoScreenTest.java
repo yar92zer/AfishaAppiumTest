@@ -4,6 +4,7 @@ import io.appium.java_client.android.AndroidDriver;
 import org.junit.jupiter.api.*;
 
 import java.net.MalformedURLException;
+import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -14,6 +15,7 @@ public class IntoScreenTest {
     @BeforeEach
     public void setUp() throws MalformedURLException {
         driver = Capability.initializeDriver();
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         intoScreen = new IntoScreen(driver);
     }
 
